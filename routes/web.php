@@ -14,3 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'DashboardController@index');
+Route::post('/dashboard/create-chat-contact', 'DashboardController@createChatContact');
+Route::get('/dashboard/create-chat-room', 'DashboardController@createChatRoom');
+Route::post('/dashboard/send-message', 'DashboardController@sendMessage');
+Route::get('/dashboard/get-chat-history', 'DashboardController@getChatHistory');
