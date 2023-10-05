@@ -7,9 +7,10 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <!-- Favicon -->
-    <link href="{{ asset('img/favicon.ico') }}" rel="icon">
+    <link href="{{ asset('img/icon.ico') }}" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +24,6 @@
 
     <!-- Libraries Stylesheet -->
     <link href="{{ asset('css/animate/animate.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
@@ -43,9 +43,8 @@
     </div>
     <!-- Spinner End -->
 
-
     <!-- Navbar Start -->
-    <div class="container-fluid sticky-top">
+    <div class="container-fluid sticky-top main-body">
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-dark p-0">
                 <a href="index.html" class="navbar-brand">
@@ -56,9 +55,8 @@
     </div>
     <!-- Navbar End -->
 
-
     <!-- Hero Start -->
-    <div class="container-fluid pt-5 bg-primary hero-header">
+    <div class="container-fluid pt-5 bg-primary hero-header main-body">
         <div class="container pt-5">
             <div class="row g-5 pt-5">
                 <div class="col-lg-6 align-self-center text-center text-lg-start mb-lg-5">
@@ -87,7 +85,9 @@
                             
             </div>
             <ul class="messages">
-                <li class="other">Hello! <br/> What can I help you?</li>
+                <!-- <li class="other">Hello! <br/> What can I help you?</li>
+                <a href='#' class='bot-button'><li class="bot">Registration</li></a>
+                <a href='#' class='bot-button'><li class="bot">Need Help</li></a> -->
             </ul>
             <div class="footer">
                 <div class="text-box" contenteditable="true" disabled="true"></div>
@@ -95,21 +95,29 @@
             </div>
         </div>
     </div>
-    <!-- Partial Chat End -->
+    <audio id="notif_sound" src="{{ asset('sound/notif.wav') }}"></audio>
 
+    <script>
+        const chatwsUrl = '<?= env('LIVECHAT_WEBSOCKET'); ?>';
+    </script>
+    <!-- Partial Chat End -->
 
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('js/wow/wow.min.js') }}"></script>
-    <script src="{{ asset('js/easing/easing.min.js') }}"></script>
-    <script src="{{ asset('js/waypoints/waypoints.min.js') }}"></script>
-    <script src="{{ asset('js/counterup/counterup.min.js') }}"></script>
-    <script src="{{ asset('js/owlcarousel/owl.carousel.min.js') }}"></script>
 
     <!-- Template Javascript -->
     <script src="{{ asset('js/chatweb/chatweb.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+    <!-- Start of Rocket.Chat Livechat Script -->
+	<!-- <script type="text/javascript">
+	(function(w, d, s, u) {
+		w.RocketChat = function(c) { w.RocketChat._.push(c) }; w.RocketChat._ = []; w.RocketChat.url = u;
+		var h = d.getElementsByTagName(s)[0], j = d.createElement(s);
+		j.async = true; j.src = 'http://localhost:3000/livechat/rocketchat-livechat.min.js?_=201903270000';
+		h.parentNode.insertBefore(j, h);
+	})(window, document, 'script', 'http://localhost:3000/livechat');
+	</script> -->
 </body>
 
 </html>
