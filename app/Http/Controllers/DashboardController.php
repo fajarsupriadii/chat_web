@@ -230,4 +230,36 @@ class DashboardController extends Controller
             ], 500);
         }
     }
+
+    public function closeRoom(Request $request)
+    {
+        try {
+            $data = $request->post();
+            $url = env('LIVECHAT_URL') . '/api/v1/livechat/room.close';
+            $client = new Client();
+            $request = $client->request('POST', $url, [
+                'form_params' => [
+                    'token' =>  $data['token'],
+                    'rid' =>  $data['rid'],
+                ]
+            ]);
+            $response = $request->getBody()->getContents();
+            Log::error($response);
+            $response = json_decode($response, true);
+
+            if (!$response['success']) {
+                response([
+                    'message' => 'Close room failed'
+                ], 500);
+            }
+
+            return response($response);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return response([
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

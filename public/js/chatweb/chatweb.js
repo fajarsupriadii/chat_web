@@ -20,6 +20,7 @@ var userToken = createUUID();
 var uniqueCode = userToken.substring(0, 3);
 var roomChatId = null;
 var createRoomstate = false;
+var closeRoomstate = false;
 // var myStorage = localStorage;
 
 // if (!myStorage.getItem('chatID')) {
@@ -41,43 +42,14 @@ function socketHandler(socket) {
 
         // Keep connection alive
         if (message.msg == 'ping') {
-            var connectRequest = {
-                msg: "pong",
-            }
-            socket.send(JSON.stringify(connectRequest));
+            keepAliveConn();
         }
 
         // Get new message
         if (message.fields != undefined) {
             console.log(message);
             if (message.fields.args != undefined && message.fields.args[0].t == undefined) {
-                var messagesContainer = $('.messages');
-                var sender = (message.fields.args[0].token != undefined) ? 'self' : 'other';
-
-                // Append message to chat box
-                messagesContainer.append([
-                    `<li class="${sender}">`,
-                    message.fields.args[0].msg.replace(/\n/g, '<br>'),
-                    '</li>'
-                ].join(''));
-
-                messagesContainer.finish().animate({
-                    scrollTop: messagesContainer.prop("scrollHeight")
-                }, 250);
-
-                if (sender == 'other') {
-                    $("#notif_sound").get(0).play();
-                }
-
-                // If event guest message
-                if (message.fields.args[0].token) {
-                    var userInput = $('.text-box');
-
-                    // clean out old message
-                    userInput.html('');
-                    // focus on input
-                    userInput.focus();
-                }
+                getNewMessage(message);
             }
         }
     };
@@ -91,6 +63,57 @@ function socketHandler(socket) {
     socket.onclose = (event) => {
         reconnectSocket();
     };
+}
+
+function keepAliveConn() {
+    var connectRequest = {
+        msg: "pong",
+    }
+    socket.send(JSON.stringify(connectRequest));
+}
+
+function getNewMessage(message) {
+    var messagesContainer = $('.messages');
+    var sender = (message.fields.args[0].token != undefined) ? 'self' : 'other';
+    var txtMsg = message.fields.args[0].msg.replace(/\n/g, '<br>');
+
+    // Append message to chat box
+    if (txtMsg.indexOf('[command]') === 0) {
+        messagesContainer.append([
+            `<a href='#' 
+                class='bot-button' 
+                onclick="sendCommand('${txtMsg.replace('[command]', '')}')"
+            >
+            <li class="bot">`,
+            txtMsg.replace('[command]', ''),
+            `</li>
+            </a>`
+        ].join(''));
+    } else {
+        messagesContainer.append([
+            `<li class="${sender}">`,
+            txtMsg,
+            '</li>'
+        ].join(''));
+    }
+
+    messagesContainer.finish().animate({
+        scrollTop: messagesContainer.prop("scrollHeight")
+    }, 250);
+
+    if (sender == 'other') {
+        $("#notif_sound").get(0).play();
+    }
+
+    // If event guest message
+    if (message.fields.args[0].token) {
+        var userInput = $('.text-box');
+
+        // clean out old message
+        userInput.html('');
+        // focus on input
+        userInput.focus();
+    }
 }
 
 function reconnectSocket() {
@@ -237,6 +260,29 @@ function sendNewMessage(input = null) {
     
     if (!newMessage) return;
 
+    if (newMessage.toLowerCase() == 'mulai' && closeRoomstate == true) {
+        createChatRoom();
+        closeRoomstate = false;
+        var messagesContainer = $('.messages');
+
+        messagesContainer.append([
+            '<li class="self">',
+            newMessage,
+            '</li>'
+        ].join(''));
+        userInput.html('');
+        userInput.focus();
+        messagesContainer.finish().animate({
+            scrollTop: messagesContainer.prop("scrollHeight")
+        }, 250);
+
+        return;
+    }
+
+    if (closeRoomstate == true) {
+        return;
+    }
+
     // Send message via websocket
     var sendMsg = {
         msg: "method",
@@ -252,6 +298,10 @@ function sendNewMessage(input = null) {
         id: randId
     };
     socket.send(JSON.stringify(sendMsg));
+
+    if (newMessage.toLowerCase() == 'selesai') {
+        closeChatRoom();
+    }
 
     // Send message to livechat
     // $.ajax({
@@ -289,11 +339,30 @@ function sendNewMessage(input = null) {
     // });
 }
 
-$('.bot-button').on('click', function() {
-    var inputMsg = $(this).find('.bot').text();
-    sendNewMessage(inputMsg);
+function closeChatRoom() {
+    $.ajax({
+        url: '/dashboard/close-room',
+        type: 'POST',
+        dataType: "json",
+        data: {
+            token: userToken,
+            rid: roomChatId
+        },
+        success: function (data) {
+            if (data.success) {
+                closeRoomstate = true;
+            }
+        },
+        error: function (xhr, status, error) {
+            console.log(xhr.responseText);
+        },
+    });
+}
+
+function sendCommand(msg) {
+    sendNewMessage(msg);
     $('.bot-button').remove();
-});
+}
 
 function onMetaAndEnter(event) {
     if ((event.metaKey || event.shiftKey) && event.keyCode == 13) {
