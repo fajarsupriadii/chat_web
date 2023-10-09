@@ -72,7 +72,7 @@
     <!-- Hero End -->
 
     <!-- Partial Chat -->
-    <div class="floating-chat">
+    <!-- <div class="floating-chat">
         <i class="fa fa-comments fa-2x" aria-hidden="true"></i>
         <div class="chat">
             <div class="header">
@@ -84,21 +84,22 @@
                 </button>
                             
             </div>
-            <ul class="messages">
+            <ul class="messages"> -->
                 <!-- <li class="other">Hello! <br/> What can I help you?</li>
                 <a href='#' class='bot-button'><li class="bot">Registration</li></a>
                 <a href='#' class='bot-button'><li class="bot">Need Help</li></a> -->
-            </ul>
+            <!-- </ul>
             <div class="footer">
                 <div class="text-box" contenteditable="true" disabled="true"></div>
                 <button id="sendMessage">send</button>
             </div>
         </div>
-    </div>
+    </div> -->
     <audio id="notif_sound" src="{{ asset('sound/notif.wav') }}"></audio>
 
     <script>
         const chatwsUrl = '<?= env('LIVECHAT_WEBSOCKET'); ?>';
+        const chatUrl = '<?= env('LIVECHAT_URL'); ?>';
     </script>
     <!-- Partial Chat End -->
 
@@ -110,14 +111,14 @@
     <script src="{{ asset('js/chatweb/chatweb.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     <!-- Start of Rocket.Chat Livechat Script -->
-	<!-- <script type="text/javascript">
+	<script type="text/javascript">
 	(function(w, d, s, u) {
 		w.RocketChat = function(c) { w.RocketChat._.push(c) }; w.RocketChat._ = []; w.RocketChat.url = u;
 		var h = d.getElementsByTagName(s)[0], j = d.createElement(s);
-		j.async = true; j.src = 'http://localhost:3000/livechat/rocketchat-livechat.min.js?_=201903270000';
+		j.async = true; j.src = chatUrl+'/livechat/rocketchat-livechat.min.js?_=201903270000';
 		h.parentNode.insertBefore(j, h);
-	})(window, document, 'script', 'http://localhost:3000/livechat');
-	</script> -->
+	})(window, document, 'script', chatUrl+'/livechat');
+	</script>
 </body>
 
 </html>
