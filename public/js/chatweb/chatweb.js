@@ -253,6 +253,7 @@ function sendNewMessage(input = null) {
     var userInput = $('.text-box');
     var newMessage = userInput.html().replace(/\<div\>|\<br.*?\>/ig, '\n').replace(/\<\/div\>/g, '').trim();
     var randId = createRandString();
+    var messagesContainer = $('.messages');
 
     if (input) {
         newMessage = input;
@@ -263,23 +264,38 @@ function sendNewMessage(input = null) {
     if (newMessage.toLowerCase() == 'mulai' && closeRoomstate == true) {
         createChatRoom();
         closeRoomstate = false;
-        var messagesContainer = $('.messages');
 
         messagesContainer.append([
             '<li class="self">',
             newMessage,
             '</li>'
         ].join(''));
-        userInput.html('');
-        userInput.focus();
         messagesContainer.finish().animate({
             scrollTop: messagesContainer.prop("scrollHeight")
         }, 250);
-
+        setTimeout(function() { 
+            userInput.html('');
+            userInput.focus();
+        }, 50);
+        
+        
         return;
     }
 
     if (closeRoomstate == true) {
+        messagesContainer.append([
+            '<li class="other">',
+            'Sesi chat sudah ditutup, silahkan ketik "mulai" untuk memulai kembali',
+            '</li>'
+        ].join(''));
+        messagesContainer.finish().animate({
+            scrollTop: messagesContainer.prop("scrollHeight")
+        }, 250);
+        setTimeout(function() { 
+            userInput.html('');
+            userInput.focus();
+        }, 50);
+
         return;
     }
 
