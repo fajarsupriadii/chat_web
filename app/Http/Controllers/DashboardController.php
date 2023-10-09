@@ -135,6 +135,7 @@ class DashboardController extends Controller
             return response([
                 'message' => 'Create chat room success',
                 'room_id' => $response['room']['_id'],
+                'agent' => $response['room']['servedBy']['username'],
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());

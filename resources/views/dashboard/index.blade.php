@@ -76,7 +76,7 @@
         <i class="fa fa-comments fa-2x" aria-hidden="true"></i>
         <div class="chat">
             <div class="header">
-                <span class="title">
+                <span class="title chat_title">
                     Virtual Assistant
                 </span>
                 <button>

@@ -139,6 +139,7 @@ function createChatRoom() {
         success: function (data) {
             if (data.room_id != undefined) {
                 roomChatId = data.room_id;
+                $('.chat_title').html('Agent: ' + data.agent);
                 console.log(roomChatId);
                 getChatHistory(socket);
             }
