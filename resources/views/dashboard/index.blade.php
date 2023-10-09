@@ -111,14 +111,14 @@
     <script src="{{ asset('js/chatweb/chatweb.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
     <!-- Start of Rocket.Chat Livechat Script -->
-	<script type="text/javascript">
+	<!-- <script type="text/javascript">
 	(function(w, d, s, u) {
 		w.RocketChat = function(c) { w.RocketChat._.push(c) }; w.RocketChat._ = []; w.RocketChat.url = u;
 		var h = d.getElementsByTagName(s)[0], j = d.createElement(s);
 		j.async = true; j.src = chatUrl+'/livechat/rocketchat-livechat.min.js?_=201903270000';
 		h.parentNode.insertBefore(j, h);
 	})(window, document, 'script', chatUrl+'/livechat');
-	</script>
+	</script> -->
 </body>
 
 </html>
