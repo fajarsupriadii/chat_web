@@ -191,8 +191,8 @@ function openElement() {
     if (createRoomstate == false) {
         var data = {
             token: userToken,
-            name: `Guest-${uniqueCode}`,
-            email: `guest${uniqueCode}@email.com`
+            name: `Dummy-${uniqueCode}`,
+            email: `dummy.${uniqueCode}@sampledummy.com`
         };
     
         // Create guest live chat contact
