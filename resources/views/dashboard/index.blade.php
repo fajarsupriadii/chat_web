@@ -72,7 +72,7 @@
     <!-- Hero End -->
 
     <!-- Partial Chat -->
-    <!-- <div class="floating-chat">
+    <div class="floating-chat">
         <i class="fa fa-comments fa-2x" aria-hidden="true"></i>
         <div class="chat">
             <div class="header">
@@ -84,17 +84,17 @@
                 </button>
                             
             </div>
-            <ul class="messages"> -->
+            <ul class="messages">
                 <!-- <li class="other">Hello! <br/> What can I help you?</li>
                 <a href='#' class='bot-button'><li class="bot">Registration</li></a>
                 <a href='#' class='bot-button'><li class="bot">Need Help</li></a> -->
-            <!-- </ul>
+            </ul>
             <div class="footer">
                 <div class="text-box" contenteditable="true" disabled="true"></div>
                 <button id="sendMessage">send</button>
             </div>
         </div>
-    </div> -->
+    </div>
     <audio id="notif_sound" src="{{ asset('sound/notif.wav') }}"></audio>
 
     <script>
