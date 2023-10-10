@@ -15,17 +15,20 @@ setTimeout(function() {
     socket.send(JSON.stringify(connectRequest));
 }, 250);
 
+var myStorage = localStorage;
+var userToken = myStorage.getItem('guestID');
+if (!userToken) {
+    userToken = createUUID();
+    myStorage.setItem('guestID', userToken);
+}
+
 var element = $('.floating-chat');
-var userToken = createUUID();
+// var userToken = createUUID();
 var uniqueCode = userToken.substring(0, 3);
 var roomChatId = null;
 var createRoomstate = false;
 var closeRoomstate = false;
-// var myStorage = localStorage;
 
-// if (!myStorage.getItem('chatID')) {
-//     myStorage.setItem('chatID', createUUID());
-// }
 
 $(document).ready(function() {
     console.log(userToken);
@@ -50,6 +53,16 @@ function socketHandler(socket) {
             console.log(message);
             if (message.fields.args != undefined && message.fields.args[0].t == undefined) {
                 getNewMessage(message);
+            } else if (message.fields.args != undefined && message.fields.args[0].t == 'livechat-close') {
+                closeRoomstate = true;
+                $('.chat_title').html('Virtual Assistant');
+                $('.messages').append([
+                    `<li class="notif">Conversation Off</li>`
+                ].join(''));
+
+                $('.messages').finish().animate({
+                    scrollTop: messagesContainer.prop("scrollHeight")
+                }, 250);
             }
         }
     };
@@ -78,17 +91,24 @@ function getNewMessage(message) {
     var txtMsg = message.fields.args[0].msg.replace(/\n/g, '<br>');
 
     // Append message to chat box
-    if (txtMsg.indexOf('[command]') === 0) {
-        messagesContainer.append([
-            `<a href='#' 
-                class='bot-button' 
-                onclick="sendCommand('${txtMsg.replace('[command]', '')}')"
-            >
-            <li class="bot">`,
-            txtMsg.replace('[command]', ''),
-            `</li>
-            </a>`
-        ].join(''));
+    if (message.fields.args[0].attachments != undefined 
+        && message.fields.args[0].attachments[0].actions != undefined) {
+        var actions = message.fields.args[0].attachments[0].actions;
+
+        $.each( actions, function( key, value ) {
+            if (value.type == 'button') {
+                messagesContainer.append([
+                    `<a href='#' 
+                        class='bot-button' 
+                        onclick="sendCommand('${value.text}')"
+                    >
+                    <li class="bot">`,
+                    value.text,
+                    `</li>
+                    </a>`
+                ].join(''));
+            }
+        });
     } else {
         messagesContainer.append([
             `<li class="${sender}">`,
@@ -145,7 +165,12 @@ function createChatRoom() {
             }
         },
         error: function (xhr, status, error) {
-            console.log(xhr.responseText);
+            var err = jQuery.parseJSON(xhr.responseJSON.message);
+            console.log(err);
+
+            $('.messages').append([
+                `<li class="notif">${err.error.replace(/\[[^\]]*\]/g, '')}</li>`
+            ].join(''));
         },
     });
 }
@@ -192,7 +217,7 @@ function openElement() {
         var data = {
             token: userToken,
             name: `Dummy-${uniqueCode}`,
-            email: `dummy.${uniqueCode}@sampledummy.com`
+            // email: `dummy.${uniqueCode}@sampledummy.com`
         };
     
         // Create guest live chat contact
@@ -319,41 +344,6 @@ function sendNewMessage(input = null) {
     if (newMessage.toLowerCase() == 'selesai') {
         closeChatRoom();
     }
-
-    // Send message to livechat
-    // $.ajax({
-    //     url: '/dashboard/send-message',
-    //     type: 'POST',
-    //     dataType: "json",
-    //     data: {
-    //         token: userToken,
-    //         rid: roomChatId,
-    //         msg: newMessage
-    //     },
-    //     success: function (data) {
-            // if (data.message_id != undefined) {
-                // var messagesContainer = $('.messages');
-
-                // messagesContainer.append([
-                //     '<li class="self">',
-                //     newMessage,
-                //     '</li>'
-                // ].join(''));
-
-                // clean out old message
-                // userInput.html('');
-                // focus on input
-                // userInput.focus();
-
-                // messagesContainer.finish().animate({
-                //     scrollTop: messagesContainer.prop("scrollHeight")
-                // }, 250);
-            // }
-    //     },
-    //     error: function (xhr, status, error) {
-    //         console.log(xhr.responseText);
-    //     },
-    // });
 }
 
 function closeChatRoom() {
@@ -368,6 +358,7 @@ function closeChatRoom() {
         success: function (data) {
             if (data.success) {
                 closeRoomstate = true;
+                $('.chat_title').html('Virtual Assistant');
             }
         },
         error: function (xhr, status, error) {

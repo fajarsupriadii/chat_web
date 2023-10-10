@@ -99,7 +99,7 @@ class DashboardController extends Controller
                 'form_params' => [
                     'token' =>  $data['token'],
                     'name' =>  $data['name'],
-                    'email' =>  $data['email'],
+                    // 'email' =>  $data['email'],
                 ]
             ]);
             $response = $request->getBody()->getContents();
@@ -139,9 +139,13 @@ class DashboardController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $result = $e->getMessage();
+            if (strpos($result, 'response') !== false) {
+                $result = explode("response:", $result)[1];
+            }
 
             return response([
-                'message' => $e->getMessage()
+                'message' => $result
             ], 500);
         }
     }

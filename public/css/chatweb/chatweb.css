@@ -168,6 +168,19 @@
   color: #0AD5C1;
   background-color: rgba(32, 127, 174, 0.635) !important;
 }
+.floating-chat .chat .messages li.notif {
+  animation: show-chat-odd 0.15s 1 ease-in;
+  -moz-animation: show-chat-odd 0.15s 1 ease-in;
+  -webkit-animation: show-chat-odd 0.15s 1 ease-in;
+  max-width: 100% !important;
+  width: 100% !important;
+  height: 20px !important;
+  padding: 0 !important;
+  text-align: center !important;
+  color: #0AD5C1;
+  font: 12px/14px "Noto Sans", sans-serif !important;
+  background-color: transparent !important;
+}
 .floating-chat .chat .messages li.self {
   animation: show-chat-even 0.15s 1 ease-in;
   -moz-animation: show-chat-even 0.15s 1 ease-in;
