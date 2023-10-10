@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Error;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
@@ -88,13 +89,24 @@ class DashboardController extends Controller
     public function createChatContact(Request $request)
     {   
         try {
+            // Get token from session
+            $authToken = Session::get('liveChatToken', null);
+            $authUserId = Session::get('liveChatUserId', null);
+
+            // Login to live chat API
+            if (!$authToken) {
+                $responseLogin = $this->loginChatApi(env('LIVECHAT_USERNAME'), env('LIVECHAT_PASSWORD'));
+                $authToken = $responseLogin['authToken'];
+                $authUserId = $responseLogin['authUserId'];
+            }
+
             $data = $request->post();
             $url = env('LIVECHAT_URL') . '/api/v1/omnichannel/contact';
             $client = new Client();
             $request = $client->request('POST', $url, [
                 'headers' => [
-                    'X-Auth-Token' => env('LIVECHAT_X_TOKEN'),
-                    'X-User-Id' => env('LIVECHAT_X_USER_ID'),
+                    'X-Auth-Token' => $authToken,
+                    'X-User-Id' => $authUserId,
                 ],
                 'form_params' => [
                     'token' =>  $data['token'],
@@ -113,6 +125,33 @@ class DashboardController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    private function loginChatApi($username, $password)
+    {
+        $authToken = $authUserId = null;
+        $urlLogin = env('LIVECHAT_URL') . '/api/v1/login';
+        $client = new Client();
+        $requestLogin = $client->request('POST', $urlLogin, [
+            'form_params' => [
+                'username' =>  $username,
+                'password' =>  $password,
+            ]
+        ]);
+        $responseLogin = $requestLogin->getBody()->getContents();
+        Log::error($responseLogin);
+        $responseLogin = json_decode($responseLogin, true);
+        if ($responseLogin['status'] == 'success') {
+            $authToken = $responseLogin['data']['authToken'];
+            $authUserId = $responseLogin['data']['userId'];
+            Session::put('liveChatToken', $authToken);
+            Session::put('liveChatUserId', $authUserId);
+        }
+
+        return [
+            'authToken' => $authToken,
+            'authUserId' => $authUserId,
+        ];
     }
 
     public function createChatRoom(Request $request)
