@@ -91,7 +91,7 @@
             </ul>
             <div class="footer">
                 <div class="text-box" contenteditable="true" disabled="true"></div>
-                <button id="sendMessage">send</button>
+                <button id="sendMessage"><i class="fa fa-paper-plane"></i></button>
             </div>
         </div>
     </div>

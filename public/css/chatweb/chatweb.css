@@ -50,12 +50,16 @@
   box-shadow: 0 0 3pt 2pt rgba(14, 200, 121, 0.3);
 }
 .floating-chat button {
-  background: transparent;
+  background: rgba(14, 200, 121, 0.3);
   border: 0;
   color: white;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   border-radius: 3px;
   cursor: pointer;
+}
+#sendMessage {
+  margin-left: 5px;
+  margin-right: 5px;
 }
 .floating-chat .chat {
   display: flex;
