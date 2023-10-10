@@ -61,7 +61,7 @@ function socketHandler(socket) {
                 ].join(''));
 
                 $('.messages').finish().animate({
-                    scrollTop: messagesContainer.prop("scrollHeight")
+                    scrollTop: $('.messages').prop("scrollHeight")
                 }, 250);
             }
         }
