@@ -86,12 +86,19 @@
             </div>
             <ul class="messages">
                 <!-- <li class="other">Hello! <br/> What can I help you?</li>
-                <a href='#' class='bot-button'><li class="bot">Registration</li></a>
-                <a href='#' class='bot-button'><li class="bot">Need Help</li></a> -->
+                <li class="bot">
+                    <button class='bot-button'>Need Help</button>
+                    <button class='bot-button'>Test</button>
+                </li> -->
             </ul>
             <div class="footer">
-                <div class="text-box" contenteditable="true" disabled="true"></div>
-                <button id="sendMessage"><i class="fa fa-paper-plane"></i></button>
+                <div class="text-box" contenteditable="true" disabled="true">
+                </div>
+                <label for="fileInput">
+                    <button id="uploadFile" class="uploadFile"><i class="fa fa-paperclip"></i></button>
+                </label>
+                <input type="file" id="fileInput" style="display: none;" accept="image/*, .pdf, .docx" />
+                <button id="sendMessage" class="sendMessage"><i class="fa fa-paper-plane"></i></button>
             </div>
         </div>
     </div>

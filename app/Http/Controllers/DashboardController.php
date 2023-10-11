@@ -115,7 +115,6 @@ class DashboardController extends Controller
                 ]
             ]);
             $response = $request->getBody()->getContents();
-            Log::error($response);
 
             return response($response);
         } catch (\Exception $e) {
@@ -162,7 +161,6 @@ class DashboardController extends Controller
             $client = new Client();
             $request = $client->request('GET', $url);
             $response = $request->getBody()->getContents();
-            Log::error($response);
             $response = json_decode($response, true);
 
             if (!isset($response['room'])) {
@@ -288,12 +286,52 @@ class DashboardController extends Controller
                 ]
             ]);
             $response = $request->getBody()->getContents();
-            Log::error($response);
             $response = json_decode($response, true);
 
             if (!$response['success']) {
                 response([
                     'message' => 'Close room failed'
+                ], 500);
+            }
+
+            return response($response);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return response([
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function uploadFileChat(Request $request)
+    {
+        try {
+            $file = $request->file('file');
+
+            $rid = $request->input('rid');
+            $token = $request->input('token');
+            $url = env('LIVECHAT_URL') . '/api/v1/livechat/upload/' . $rid;
+
+            $client = new Client();
+            $request = $client->request('POST', $url, [
+                'headers' => [
+                    'x-visitor-token' => $token,
+                ],
+                'multipart' => [
+                    [
+                        'name' => 'file',
+                        'contents' => fopen($file->getRealPath(), 'r'),
+                        'filename' => $file->getClientOriginalName(),
+                    ]
+                ]
+            ]);
+            $response = $request->getBody()->getContents();
+            $response = json_decode($response, true);
+
+            if (!$response['success']) {
+                response([
+                    'message' => 'Upload file failed!'
                 ], 500);
             }
 

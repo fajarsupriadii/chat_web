@@ -92,23 +92,55 @@ function getNewMessage(message) {
 
     // Append message to chat box
     if (message.fields.args[0].attachments != undefined 
-        && message.fields.args[0].attachments[0].actions != undefined) {
-        var actions = message.fields.args[0].attachments[0].actions;
+        && message.fields.args[0].attachments[0] != undefined) {
 
-        $.each( actions, function( key, value ) {
-            if (value.type == 'button') {
+        // Message button action
+        if (message.fields.args[0].attachments[0].actions != undefined) {
+            var actions = message.fields.args[0].attachments[0].actions;
+            var button = '';
+
+            $.each( actions, function( key, value ) {
+                if (value.type == 'button') {
+                    button += `<button class='bot-button' onclick="sendCommand('${value.text}')">${value.text}</button>`;
+                }
+            });
+            
+            if (button != '') {
                 messagesContainer.append([
-                    `<a href='#' 
-                        class='bot-button' 
-                        onclick="sendCommand('${value.text}')"
-                    >
-                    <li class="bot">`,
-                    value.text,
-                    `</li>
-                    </a>`
+                    `<li class="bot">`,
+                    button,
+                    `</li>`
                 ].join(''));
             }
-        });
+        }
+
+        // When attachment is image
+        if (message.fields.args[0].attachments[0].image_url != undefined) {
+            var image = message.fields.args[0].attachments[0];
+            var imageUrl = chatUrl + image.image_url;
+            messagesContainer.append([
+                `<a href='${imageUrl}'>
+                <li class="${sender}">`,
+                `<img class='chat-img' src='${imageUrl}' />`,
+                `</li>
+                </a>`
+            ].join(''));
+        }
+
+        // When attachment is file
+        if (message.fields.args[0].file != undefined 
+            && message.fields.args[0].file.type.indexOf('image') === -1) {
+            var file = image = message.fields.args[0].attachments[0];
+            var fileUrl = chatUrl + file.title_link;
+            messagesContainer.append([
+                `<a href='${fileUrl}'>
+                <li class="${sender}">`,
+                file.title,
+                `<i class="fa fa-download download-button"></i></li>
+                </a>`
+            ].join(''));
+        }
+        
     } else {
         messagesContainer.append([
             `<li class="${sender}">`,
@@ -381,3 +413,38 @@ function onMetaAndEnter(event) {
         sendNewMessage();
     }
 }
+
+$('#uploadFile').on('click', function() {
+    if (closeRoomstate == true) {
+        return;
+    }
+    
+    $('#fileInput').trigger('click');
+});
+
+$('#fileInput').on('change', function() {
+    var fileUpload = $(this).prop('files')[0];
+
+    if (fileUpload != null) {
+        var formData = new FormData();
+        formData.append("file", fileUpload);
+        formData.append("rid", roomChatId);
+        formData.append("token", userToken);
+
+        $.ajax({
+            url: '/dashboard/upload-file-chat',
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function (response) {
+                
+            },
+            error: function (xhr, status, error) {
+                console.log(xhr.responseText);
+            },
+        });
+
+        $(this).val('');
+    }
+});

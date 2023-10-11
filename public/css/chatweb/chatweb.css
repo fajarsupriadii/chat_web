@@ -38,9 +38,9 @@
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 2px rgba(0, 0, 0, 0.14);
 }
 .floating-chat.expand {
-  width: 300px;
-  max-height: 450px;
-  height: 450px;
+  width: 400px;
+  max-height: 550px;
+  height: 550px;
   border-radius: 5px;
   cursor: auto;
   opacity: 1;
@@ -57,9 +57,21 @@
   border-radius: 3px;
   cursor: pointer;
 }
-#sendMessage {
+.sendMessage {
+  background: transparent !important;
   margin-left: 5px;
   margin-right: 5px;
+}
+.uploadFile {
+  margin-left: 5px;
+  background: transparent !important;
+}
+.chat-img {
+  max-width: 150px !important;
+  max-height: 150px !important;
+}
+.download-button {
+  margin-left: 5px !important;
 }
 .floating-chat .chat {
   display: flex;
@@ -167,10 +179,25 @@
   animation: show-chat-odd 0.15s 1 ease-in;
   -moz-animation: show-chat-odd 0.15s 1 ease-in;
   -webkit-animation: show-chat-odd 0.15s 1 ease-in;
-  float: right;
+  max-width: 100% !important;
+  width: 100% !important;
+  text-align: center !important;
+  padding: 0 !important;
+  /* float: right; */
   margin-right: 45px;
   color: #0AD5C1;
-  background-color: rgba(32, 127, 174, 0.635) !important;
+  background-color: transparent !important;
+}
+.bot-button{
+  background: rgba(14, 200, 121, 0.3);
+  border: 0;
+  color: white;
+  padding: 5px !important;
+  /* text-transform: uppercase; */
+  border-radius: 3px;
+  cursor: pointer;
+  margin-left: 5px !important;
+  margin-bottom: 5px !important;
 }
 .floating-chat .chat .messages li.notif {
   animation: show-chat-odd 0.15s 1 ease-in;
