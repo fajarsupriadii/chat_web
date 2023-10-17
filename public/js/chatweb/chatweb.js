@@ -191,9 +191,15 @@ function createChatRoom() {
         success: function (data) {
             if (data.room_id != undefined) {
                 roomChatId = data.room_id;
-                $('.chat_title').html('Agent: ' + data.agent);
-                console.log(roomChatId);
-                getChatHistory(socket);
+                if (data.agent == null) {
+                    closeChatRoom();
+                    createChatRoom();
+                } else {
+                    $('.chat_title').html('Agent: ' + data.agent);
+                    console.log(roomChatId);
+                    getChatHistory(socket);
+                }
+                closeRoomstate = false;
             }
         },
         error: function (xhr, status, error) {

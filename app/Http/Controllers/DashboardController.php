@@ -90,15 +90,15 @@ class DashboardController extends Controller
     {   
         try {
             // Get token from session
-            $authToken = Session::get('liveChatToken', null);
-            $authUserId = Session::get('liveChatUserId', null);
+            // $authToken = Session::get('liveChatToken', null);
+            // $authUserId = Session::get('liveChatUserId', null);
 
             // Login to live chat API
-            if (!$authToken) {
+            // if (!$authToken) {
                 $responseLogin = $this->loginChatApi(env('LIVECHAT_USERNAME'), env('LIVECHAT_PASSWORD'));
                 $authToken = $responseLogin['authToken'];
                 $authUserId = $responseLogin['authUserId'];
-            }
+            // }
 
             $data = $request->post();
             $url = env('LIVECHAT_URL') . '/api/v1/omnichannel/contact';
@@ -138,7 +138,7 @@ class DashboardController extends Controller
             ]
         ]);
         $responseLogin = $requestLogin->getBody()->getContents();
-        Log::error($responseLogin);
+        // Log::error($responseLogin);
         $responseLogin = json_decode($responseLogin, true);
         if ($responseLogin['status'] == 'success') {
             $authToken = $responseLogin['data']['authToken'];
@@ -172,7 +172,8 @@ class DashboardController extends Controller
             return response([
                 'message' => 'Create chat room success',
                 'room_id' => $response['room']['_id'],
-                'agent' => $response['room']['servedBy']['username'],
+                'agent' => isset($response['room']['servedBy']['username']) ? 
+                    $response['room']['servedBy']['username'] : null,
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
