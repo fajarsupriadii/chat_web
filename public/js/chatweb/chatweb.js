@@ -63,6 +63,12 @@ function socketHandler(socket) {
                 $('.messages').finish().animate({
                     scrollTop: $('.messages').prop("scrollHeight")
                 }, 250);
+            } else if (message.fields.args != undefined && message.fields.args[0].t == 'livechat_transfer_history') {
+                // Change chat title when transfer to live agent
+                var transferData = message.fields.args[0].transferData;
+                if (transferData.transferredTo != undefined) {
+                    $('.chat_title').html('Agent: ' + transferData.transferredTo.name);
+                }
             }
         }
     };
