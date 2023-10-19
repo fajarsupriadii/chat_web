@@ -61,7 +61,7 @@ class RocketChatController extends Controller
             // Set available agent
             if (isset($responseAgent['agents'])) {
                 foreach ($responseAgent['agents'] as $key => $value) {
-                    if (!in_array($value['_id'], $listUnavailableAgent) && $value['status'] == 'online') {
+                    if (!in_array($value['_id'], $listUnavailableAgent) && in_array($value['status'], ['online', 'away'])) {
                         $agentId = $value['_id'];
                         $agentUsername = $value['username'];
                         break;
