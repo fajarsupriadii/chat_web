@@ -203,6 +203,7 @@ function createChatRoom() {
                 } else {
                     $('.chat_title').html('Agent: ' + data.agent);
                     console.log(roomChatId);
+                    sendNewMessage('Hi!');
                     getChatHistory(socket);
                 }
                 closeRoomstate = false;
